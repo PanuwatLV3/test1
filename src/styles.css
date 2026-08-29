@@ -162,6 +162,16 @@
     overflow-x: hidden;
   }
 
+  header {
+    position: fixed !important;
+    inset: 0 0 auto 0;
+    z-index: 40;
+  }
+
+  main {
+    padding-top: 5rem;
+  }
+
   ::selection {
     background-color: var(--gold);
     color: var(--ink);

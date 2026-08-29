@@ -1,19 +1,34 @@
 import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 
 import { languageLabels, languages, useLanguage } from "@/lib/i18n";
 
 export function Header() {
   const { language, setLanguage } = useLanguage();
+  const [isVisible, setIsVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 24);
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-ink/15 bg-cream/85 backdrop-blur-sm">
+    <header
+      className={[
+        "fixed inset-x-0 top-0 z-40 border-b border-ink/15 bg-cream/85 backdrop-blur-sm transition-transform duration-300 ease-out",
+        isVisible ? "translate-y-0" : "-translate-y-full",
+      ].join(" ")}
+    >
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4">
         <Link to="/" className="flex items-center gap-2.5">
-          {/* <img
-            src={pengshenLogo}
-            alt="Peng Shen logo"
-            className="h-12 w-12 rounded-full border border-ink/15 bg-ink object-cover shadow-sm sm:h-14 sm:w-14"
-          /> */}
           <span className="font-display text-lg tracking-wide sm:text-xl">
             About<span className="text-copper"> </span>Me
           </span>
