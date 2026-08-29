@@ -1,32 +1,12 @@
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
 import { languageLabels, languages, useLanguage } from "@/lib/i18n";
 
 export function Header() {
   const { language, setLanguage } = useLanguage();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-
-      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 24);
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
 
   return (
-    <header
-      className={[
-        "fixed inset-x-0 top-0 z-40 border-b border-ink/15 bg-cream/85 backdrop-blur-sm transition-transform duration-300 ease-out",
-        isVisible ? "translate-y-0" : "-translate-y-full",
-      ].join(" ")}
-    >
+    <header className="border-b border-ink/15 bg-cream/85 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4">
         <Link to="/" className="flex items-center gap-2.5">
           <span className="font-display text-lg tracking-wide sm:text-xl">
