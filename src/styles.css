@@ -1,0 +1,174 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Design system — "70s Space Chrome"
+ * Warm cream/parchment paper, deep ink text, copper + gold + mint accents.
+ * All colors are semantic tokens in oklch. Never hardcode colors in components.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --font-display: var(--font-display-family);
+  --font-sans: var(--font-sans-family);
+
+  --color-cream: var(--cream);
+  --color-parchment: var(--parchment);
+  --color-ink: var(--ink);
+  --color-tan: var(--tan);
+  --color-copper: var(--copper);
+  --color-slate: var(--slate);
+  --color-mint: var(--mint);
+  --color-gold: var(--gold);
+  --color-moss: var(--moss);
+
+  --color-background: var(--cream);
+  --color-foreground: var(--ink);
+  --color-card: var(--parchment);
+  --color-card-foreground: var(--ink);
+  --color-primary: var(--ink);
+  --color-primary-foreground: var(--cream);
+  --color-secondary: var(--parchment);
+  --color-secondary-foreground: var(--ink);
+  --color-muted: var(--parchment);
+  --color-muted-foreground: var(--muted-foreground-c);
+  --color-accent: var(--copper);
+  --color-accent-foreground: var(--cream);
+  --color-destructive: oklch(0.55 0.19 27);
+  --color-destructive-foreground: var(--cream);
+  --color-border: var(--border-c);
+  --color-input: var(--border-c);
+  --color-ring: var(--copper);
+}
+
+:root {
+  --radius: 1rem;
+  --font-display-family: "Righteous", ui-sans-serif, sans-serif;
+  --font-sans-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+
+  --cream: oklch(0.938 0.028 84);
+  --parchment: oklch(0.888 0.045 87);
+  --ink: oklch(0.235 0.021 62);
+  --tan: oklch(0.703 0.081 74);
+  --copper: oklch(0.567 0.113 42);
+  --slate: oklch(0.415 0.035 261);
+  --mint: oklch(0.783 0.055 165);
+  --gold: oklch(0.746 0.126 79);
+  --moss: oklch(0.588 0.078 111);
+
+  --muted-foreground-c: oklch(0.45 0.02 62);
+  --border-c: oklch(0.235 0.021 62 / 15%);
+
+  --chrome-gradient: linear-gradient(
+    180deg,
+    oklch(0.9 0.09 85) 0%,
+    oklch(0.746 0.126 79) 22%,
+    oklch(0.52 0.09 68) 44%,
+    oklch(0.938 0.028 84) 47%,
+    oklch(0.567 0.113 42) 53%,
+    oklch(0.87 0.07 85) 72%,
+    oklch(0.703 0.081 74) 100%
+  );
+  --grid-line: oklch(0.235 0.021 62 / 6%);
+  --shadow-panel: 0 24px 50px -24px oklch(0.235 0.021 62 / 0.5);
+  --shadow-card: 0 20px 40px -24px oklch(0.235 0.021 62 / 0.5);
+}
+
+.dark {
+  --cream: oklch(0.19 0.015 62);
+  --parchment: oklch(0.26 0.02 66);
+  --ink: oklch(0.938 0.028 84);
+  --tan: oklch(0.75 0.075 74);
+  --copper: oklch(0.68 0.11 45);
+  --slate: oklch(0.6 0.035 261);
+  --mint: oklch(0.8 0.06 165);
+  --gold: oklch(0.79 0.12 80);
+  --moss: oklch(0.68 0.08 111);
+
+  --muted-foreground-c: oklch(0.75 0.02 84);
+  --border-c: oklch(0.938 0.028 84 / 18%);
+  --grid-line: oklch(0.938 0.028 84 / 6%);
+}
+
+@utility chrome {
+  background: var(--chrome-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility grid-bg {
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 46px 46px;
+}
+
+@utility shadow-panel {
+  box-shadow: var(--shadow-panel);
+}
+
+@utility shadow-card {
+  box-shadow: var(--shadow-card);
+}
+
+@utility rise {
+  animation: rise-in 0.6s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans-family);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background-color: var(--gold);
+    color: var(--ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--copper);
+    outline-offset: 2px;
+  }
+}
