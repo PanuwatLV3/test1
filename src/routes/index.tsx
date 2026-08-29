@@ -24,6 +24,8 @@ const translations = {
     employeeCode: "Employee Code",
     position: "Position",
     birthdate: "Birthdate",
+    startWorkDate: "Start Work Date",
+    responsibility: "Responsibility",
     birthplace: "Birthplace",
     nationality: "Nationality",
     gender: "Gender",
@@ -38,6 +40,8 @@ const translations = {
     employeeCode: "รหัสพนักงาน",
     position: "ตำแหน่ง",
     birthdate: "วันเกิด",
+    startWorkDate: "วันเริ่มงาน",
+    responsibility: "ความรับผิดชอบ",
     birthplace: "สถานที่เกิด",
     nationality: "สัญชาติ",
     gender: "เพศ",
@@ -52,6 +56,8 @@ const translations = {
     employeeCode: "员工编号",
     position: "职位",
     birthdate: "出生日期",
+    startWorkDate: "入职日期",
+    responsibility: "职责",
     birthplace: "出生地",
     nationality: "国籍",
     gender: "性别",
@@ -105,6 +111,64 @@ function Index() {
 
   const t = translations[language as LanguageCode];
 
+  const getElapsedWorkPeriod = (startDate: string) => {
+    const [yStr, mStr, dStr] = startDate.split("/");
+    const start = new Date(Number(yStr), Number(mStr) - 1, Number(dStr));
+    const now = new Date();
+
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    let days = now.getDate() - start.getDate();
+
+    if (days < 0) {
+      const previousMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      days += previousMonth.getDate();
+      months -= 1;
+    }
+
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    const labels = {
+      en: {
+        year: "year",
+        years: "years",
+        month: "month",
+        months: "months",
+        day: "day",
+        days: "days",
+      },
+      th: {
+        year: "ปี",
+        years: "ปี",
+        month: "เดือน",
+        months: "เดือน",
+        day: "วัน",
+        days: "วัน",
+      },
+      zh: {
+        year: "年",
+        years: "年",
+        month: "个月",
+        months: "个月",
+        day: "天",
+        days: "天",
+      },
+    } as const;
+
+    const labelSet = labels[language as LanguageCode];
+    const unitFor = (value: number, singular: string, plural: string) =>
+      value === 1 ? singular : plural;
+
+    return [
+      `${years} ${unitFor(years, labelSet.year, labelSet.years)}`,
+      `${months} ${unitFor(months, labelSet.month, labelSet.months)}`,
+      `${days} ${unitFor(days, labelSet.day, labelSet.days)}`,
+    ].join(" ");
+  };
+
   const handleContactClick = (label: keyof typeof contactDetails) => {
     navigate({
       to: "/contact/$contact",
@@ -123,6 +187,16 @@ function Index() {
       icon: Calendar,
       label: t.birthdate,
       value: `${profile.birthdate}${age != null ? ` (${age} ${t.years})` : ""}`,
+    },
+    {
+      icon: Calendar,
+      label: t.startWorkDate,
+      value: `${profile.startWorkDate} (${getElapsedWorkPeriod(profile.startWorkDate)})`,
+    },
+    {
+      icon: Briefcase,
+      label: t.responsibility,
+      value: profile.responsibilities.join(", "),
     },
     { icon: MapPin, label: t.birthplace, value: profile.birthPlace[language] },
     { icon: Globe, label: t.nationality, value: profile.nationality[language] },

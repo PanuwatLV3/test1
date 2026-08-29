@@ -60,6 +60,13 @@ export const profile = {
     zh: "泰國，北欖府",
   },
   birthdate: "2004/05/30",
+  startWorkDate: "2026/05/05",
+  responsibilities: [
+    "EAP",
+    "Test Auto Production Mode",
+    "Lock/Unlock Single Machine Control",
+    "Analysis Failure of Auto Production Mode",
+  ],
   maritalStatus: {
     en: "Single",
     th: "โสด",
