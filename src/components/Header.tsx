@@ -6,7 +6,7 @@ export function Header() {
   const { language, setLanguage } = useLanguage();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-ink/15 bg-cream/85 backdrop-blur-sm">
+    <header className="fixed inset-x-0 top-0 z-40 border-b border-ink/15 bg-cream/85 backdrop-blur-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-4">
         <Link to="/" className="flex items-center gap-2.5">
           {/* <img
