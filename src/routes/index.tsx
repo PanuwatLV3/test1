@@ -158,7 +158,7 @@ function Index() {
         <div className="p-6 sm:p-10">
           <div className="text-center">
             <h1 className="font-display text-4xl leading-none sm:text-5xl">
-              <span className="chrome">{profile.firstname}</span>{" "}
+              <span>{profile.firstname}</span>{" "}
               {profile.lastname}
             </h1>
             <p className="mt-2 font-display text-xl text-copper">
