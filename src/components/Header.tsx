@@ -1,8 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
 import { languageLabels, languages, useLanguage } from "@/lib/i18n";
-import pengshenLogo from "../assets/pengshenlogo.png";
-import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   const { language, setLanguage } = useLanguage();
@@ -40,8 +38,6 @@ export function Header() {
               ▾
             </span>
           </label>
-
-          <ThemeToggle />
         </div>
       </div>
     </header>

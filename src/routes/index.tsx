@@ -1,99 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import {
   Briefcase,
   Calendar,
-  Facebook,
   Globe,
   Languages,
-  Mail,
   MapPin,
-  MessageCircle,
-  MessageSquare,
   User,
 } from "lucide-react";
 
-import facebookQr from "@/assets/faebookqrcode.png";
-import lineQr from "@/assets/lineqrcode.jfif";
-import wechatQr from "@/assets/wechatqrcode.jfif";
+import { contactDetails, profile, toContactRouteParam } from "@/lib/contact-data";
 import { useLanguage, type LanguageCode } from "@/lib/i18n";
 
 const title = "My Peng Shen Profile";
 const description =
   "Panuwat Klinsukhon (Owen) — Intelligent Engineer personnel card.";
 
-const contactDetails = {
-  WeChat: {
-    id: "Panuwat_LV999",
-    qr: wechatQr,
-    actionLabel: "Add WeChat",
-    actionUrl: "weixin://dl/chat?Panuwat_LV999",
-  },
-  LINE: {
-    id: "owenzaza555",
-    qr: lineQr,
-    actionLabel: "Add LINE",
-    actionUrl: "https://line.me/ti/p/maEHq_0A4y",
-  },
-  Facebook: {
-    id: "Panuwat Klinsukhon",
-    qr: facebookQr,
-    actionLabel: "Add Facebook",
-    actionUrl: "https://www.facebook.com/share/1DTyGdbCtw/",
-  },
-  Gmail: {
-    id: "panuwat.kl94@gmail.com",
-    actionLabel: "Send Email Now!",
-    actionUrl: "mailto:panuwat.kl94@gmail.com",
-  },
-} as const;
-
-const profile = {
-  firstname: "Panuwat",
-  lastname: "Klinsukhon",
-  nickname: "Owen",
-  chineseName: "歐文",
-  employeeCode: "A2618807",
-  position: {
-    en: "Intelligent Engineer (Level 2)",
-    th: "วิศวกรอัจฉริยะ (ระดับ 2)",
-    zh: "智能化师（Level 2）",
-  },
-  company: "Peng Shen",
-  department: "-",
-  gender: {
-    en: "Male",
-    th: "ชาย",
-    zh: "男性",
-  },
-  nationality: {
-    en: "Thai",
-    th: "ไทย",
-    zh: "泰國",
-  },
-  birthPlace: {
-    en: "Thailand, Prachinburi",
-    th: "ประเทศไทย ปราจีนบุรี",
-    zh: "泰國，北欖府",
-  },
-  birthdate: "2004/05/30",
-  maritalStatus: {
-    en: "Single",
-    th: "โสด",
-    zh: "单身",
-  },
-  languages: {
-    en: ["Thai", "English"],
-    th: ["ไทย", "อังกฤษ"],
-    zh: ["泰文", "英文"],
-  },
-  contacts: [
-    { label: "WeChat", icon: MessageCircle },
-    { label: "LINE", icon: MessageSquare },
-    { label: "Facebook", icon: Facebook },
-    { label: "Gmail", icon: Mail },
-  ] as const,
-};
 
 const translations = {
   en: {
@@ -174,11 +96,8 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   const { language } = useLanguage();
+  const navigate = useNavigate();
   const [age, setAge] = useState<number | null>(null);
-  const [selectedContact, setSelectedContact] = useState<
-    keyof typeof contactDetails | null
-  >(null);
-  const [copiedContact, setCopiedContact] = useState<string | null>(null);
 
   useEffect(() => {
     setAge(calculateAge(profile.birthdate));
@@ -187,44 +106,10 @@ function Index() {
   const t = translations[language as LanguageCode];
 
   const handleContactClick = (label: keyof typeof contactDetails) => {
-    setSelectedContact(label);
-  };
-
-  const openContactAction = (label: keyof typeof contactDetails) => {
-    const url = contactDetails[label].actionUrl;
-    if (url.startsWith("http") || url.startsWith("mailto:")) {
-      window.open(url, "_blank", "noopener,noreferrer");
-      setSelectedContact(null);
-      return;
-    }
-
-    window.location.href = url;
-    setSelectedContact(null);
-  };
-
-  const handleCopyContact = async (value: string) => {
-    try {
-      if (navigator.clipboard && window.isSecureContext) {
-        await navigator.clipboard.writeText(value);
-        setCopiedContact(selectedContact ?? null);
-        return;
-      }
-
-      const textarea = document.createElement("textarea");
-      textarea.value = value;
-      textarea.setAttribute("readonly", "true");
-      textarea.style.position = "fixed";
-      textarea.style.opacity = "0";
-      document.body.appendChild(textarea);
-      textarea.select();
-      document.execCommand("copy");
-      document.body.removeChild(textarea);
-      setCopiedContact(selectedContact ?? null);
-    } catch {
-      setCopiedContact(null);
-    }
-
-    window.setTimeout(() => setCopiedContact(null), 1200);
+    navigate({
+      to: "/contact/$contact",
+      params: { contact: toContactRouteParam(label) },
+    });
   };
 
   const rows = [
@@ -327,84 +212,6 @@ function Index() {
         </div>
       </div>
 
-      {selectedContact && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/45 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-3xl border border-ink/15 bg-cream p-5 shadow-panel">
-            <div className="flex items-center justify-between gap-3">
-              <h3 className="font-display text-2xl">{selectedContact}</h3>
-              <button
-                type="button"
-                onClick={() => setSelectedContact(null)}
-                className="rounded-full border border-ink/15 px-2.5 py-1 text-sm text-ink/70 hover:bg-parchment"
-                aria-label="Close popup"
-              >
-                ✕
-              </button>
-            </div>
-
-            {(selectedContact === "WeChat" ||
-              selectedContact === "LINE" ||
-              selectedContact === "Facebook") && (
-              <div className="mt-4 flex justify-center">
-                <img
-                  src={contactDetails[selectedContact].qr}
-                  alt={
-                    selectedContact === "WeChat"
-                      ? "WeChat QR code"
-                      : selectedContact === "LINE"
-                        ? "LINE QR code"
-                        : "Facebook QR code"
-                  }
-                  className="h-52 w-52 rounded-2xl border border-ink/15 bg-cream object-cover"
-                />
-              </div>
-            )}
-
-            <div className="mt-5 rounded-2xl border border-ink/15 bg-parchment/50 p-4">
-              <div className="flex items-center justify-between gap-3">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink/50">
-                  {selectedContact === "WeChat"
-                    ? "WeChat ID"
-                    : selectedContact === "LINE"
-                      ? "LINE ID"
-                      : selectedContact === "Facebook"
-                        ? "Facebook ID"
-                        : "Contact ID"}
-                </p>
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleCopyContact(contactDetails[selectedContact].id)
-                  }
-                  className="rounded-full border border-ink/20 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-ink transition hover:bg-cream"
-                >
-                  {copiedContact === selectedContact ? "Copied!" : "Copy"}
-                </button>
-              </div>
-              <p className="mt-2 text-sm font-medium break-all">
-                {contactDetails[selectedContact].id}
-              </p>
-            </div>
-
-            <div className="mt-5 flex gap-3">
-              <button
-                type="button"
-                onClick={() => openContactAction(selectedContact)}
-                className="inline-flex flex-1 items-center justify-center rounded-full bg-ink px-4 py-2.5 text-sm font-semibold text-cream transition hover:bg-copper"
-              >
-                {contactDetails[selectedContact].actionLabel}
-              </button>
-              <button
-                type="button"
-                onClick={() => setSelectedContact(null)}
-                className="inline-flex items-center justify-center rounded-full border border-ink/20 px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-parchment"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
